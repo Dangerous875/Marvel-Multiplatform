@@ -1,12 +1,13 @@
-package com.klyxdevs.kmptp2024.tpBase
+package com.klyxdevs.kmptp2024.data.repository
 
 import com.klyxdevs.kmptp2024.data.local.Character
 import com.klyxdevs.kmptp2024.data.network.model.CharactersResponse
+import com.klyxdevs.kmptp2024.data.network.service.APIService
+import com.klyxdevs.kmptp2024.domain.repository.Repository
 
-class KtorCharactersRepository(private val apiClient: MarvelCharactersClient) : CharactersRepository {
-
+class RepositoryProvider(private val api : APIService):Repository {
     override suspend fun getCharacters(timestamp: Long, md5: String): List<Character> {
-        return apiClient.getAllCharacters(timestamp, md5).toModel()
+        return api.getAllCharacters(timestamp, md5).toModel()
     }
 
     private fun CharactersResponse.toModel(): List<Character> {
@@ -15,8 +16,10 @@ class KtorCharactersRepository(private val apiClient: MarvelCharactersClient) : 
                 id = it.id,
                 name = it.name,
                 description = it.description,
-                thumbnailUrl = it.thumbnail.toUrl()
+                thumbnailUrl = it.thumbnail
             )
         }
     }
+
+
 }
