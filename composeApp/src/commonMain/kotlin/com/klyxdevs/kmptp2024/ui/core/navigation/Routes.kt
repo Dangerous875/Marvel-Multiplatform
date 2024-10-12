@@ -1,4 +1,4 @@
-package com.klyxdevs.kmptp2024.ui.navigation
+package com.klyxdevs.kmptp2024.ui.core.navigation
 
 import kotlinx.serialization.Serializable
 

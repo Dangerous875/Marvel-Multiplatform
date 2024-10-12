@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.klyxdevs.kmptp2024.ui.navigation.Routes
+import com.klyxdevs.kmptp2024.ui.core.navigation.Routes
 
 @Composable
 fun HomeScreen(navController: NavController){
