@@ -7,8 +7,4 @@ import kotlinx.serialization.Serializable
 data class Thumbnail(
     @SerialName("path") val path: String,
     @SerialName("extension") val extension: String
-) {
-    fun toUrl() : String {
-        return "$path.$extension"
-    }
-}
+)

@@ -13,10 +13,17 @@ import io.ktor.utils.io.core.toByteArray
 class GetCharactersFromApiUseCase(private val repository: Repository) {
 
     suspend operator fun invoke(): List<CharacterDomain> {
-        val timestamp = getTimeMillis()
-        val hash = md5(timestamp.toString() + PRIVATE_KEY + PUBLIC_KEY)
-        val response = repository.getCharacters(timestamp = timestamp, md5 = hash)
-        return sort(response).map { it.toDomain() }
+        val heroList = repository.getCharactersDataBase()
+        if (heroList.isNotEmpty()){
+            return heroList.map { it.toDomain() }
+        }else{
+            val timestamp = getTimeMillis()
+            val hash = md5(timestamp.toString() + PRIVATE_KEY + PUBLIC_KEY)
+            val response = repository.getCharacters(timestamp = timestamp, md5 = hash)
+            val orderList = sort(response)
+            repository.setCharactersDataBase(orderList)
+            return orderList.map { it.toDomain() }
+        }
     }
 }
 
