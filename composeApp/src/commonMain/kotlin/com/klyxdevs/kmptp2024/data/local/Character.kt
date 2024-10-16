@@ -15,6 +15,8 @@ data class Character(
 fun Character.toDomain() = CharacterDomain(
     id = this.id,
     name = this.name,
-    description = this.description,
+    description = this.description.ifEmpty {
+        "The description does not exist, very bad API :("
+    },
     imageURL = "${thumbnailUrl.path}.${thumbnailUrl.extension}"
 )
