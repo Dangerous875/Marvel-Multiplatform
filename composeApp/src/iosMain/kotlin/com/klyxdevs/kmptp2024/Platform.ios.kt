@@ -13,7 +13,7 @@ actual fun getPlatform(): Platform = IOSPlatform()
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class DatabaseDriverFactory {
-    actual fun create(): SqlDriver {
-        TODO("Not yet implemented")
+    actual fun createDriver(): SqlDriver {
+        return NativeSqliteDriver(SuperHeroDB.Schema, "SuperHeroDB.db")
     }
 }

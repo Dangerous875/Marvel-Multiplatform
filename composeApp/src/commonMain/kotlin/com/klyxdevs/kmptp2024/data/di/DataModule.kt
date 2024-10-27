@@ -1,5 +1,6 @@
 package com.klyxdevs.kmptp2024.data.di
 
+import com.klyxdevs.kmptp2024.DatabaseDriverFactory
 import com.klyxdevs.kmptp2024.data.database.CharactersProvider
 import com.klyxdevs.kmptp2024.data.network.service.APIService
 import com.klyxdevs.kmptp2024.data.repository.RepositoryProvider
@@ -29,6 +30,8 @@ val dataModule = module {
             }
         }
     }
+
+    single { get<DatabaseDriverFactory>().createDriver()}
 
     factoryOf(::APIService)
     factory<Repository> { RepositoryProvider(get(),get()) }

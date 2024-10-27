@@ -106,7 +106,7 @@ fun TopBar(navController: NavController) {
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(Color.Black), navigationIcon = {
-            IconButton(onClick = {  showExitConfirmation = true  }) {
+            IconButton(onClick = { /* showExitConfirmation = true */ navController.navigate(Routes.TestScreen) }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null,

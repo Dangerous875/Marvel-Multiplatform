@@ -1,6 +1,7 @@
 package com.klyxdevs.kmptp2024.data.di
 
 import com.klyxdevs.kmptp2024.Greeting
+import com.klyxdevs.kmptp2024.ui.Test.TestViewModel
 import com.klyxdevs.kmptp2024.ui.detailScreen.viewmodel.DetailScreenViewmodel
 import com.klyxdevs.kmptp2024.ui.homeScreen.local.WallpaperLogos
 import com.klyxdevs.kmptp2024.ui.homeScreen.viewmodel.HomeScreenViewModel
@@ -14,4 +15,5 @@ val uiModule = module {
     factoryOf(::DetailScreenViewmodel)
     factoryOf(::WallpaperLogos)
     factoryOf(::Greeting)
+    factoryOf(::TestViewModel)
 }
