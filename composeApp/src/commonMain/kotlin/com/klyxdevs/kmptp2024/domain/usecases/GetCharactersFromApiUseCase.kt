@@ -1,7 +1,5 @@
 package com.klyxdevs.kmptp2024.domain.usecases
 
-import app.cash.sqldelight.db.SqlDriver
-import com.klyxdevs.kmptp2024.SuperHeroDB
 import com.klyxdevs.kmptp2024.data.core.PRIVATE_KEY
 import com.klyxdevs.kmptp2024.data.core.PUBLIC_KEY
 import com.klyxdevs.kmptp2024.data.local.Character
@@ -11,7 +9,6 @@ import com.klyxdevs.kmptp2024.domain.repository.Repository
 import com.soywiz.krypto.MD5
 import io.ktor.util.date.getTimeMillis
 import io.ktor.utils.io.core.toByteArray
-import org.koin.mp.KoinPlatform.getKoin
 
 class GetCharactersFromApiUseCase(private val repository: Repository) {
 
@@ -20,13 +17,18 @@ class GetCharactersFromApiUseCase(private val repository: Repository) {
         if (heroList.isNotEmpty()) {
             return heroList.map { it.toDomain() }
         } else {
+            try {
+                val timestamp = getTimeMillis()
+                val hash = md5(timestamp.toString() + PRIVATE_KEY + PUBLIC_KEY)
+                val response = repository.getCharacters(timestamp = timestamp, md5 = hash)
+                val orderList = sort(response)
+                repository.deleteSuperHeroesSQLDelight()
+                repository.insertSuperHeroesSQLDelight(orderList.map { it.toDomain() })
+                return orderList.map { it.toDomain() }
+            } catch (e: Exception) {
+                return emptyList()
+            }
 
-            val timestamp = getTimeMillis()
-            val hash = md5(timestamp.toString() + PRIVATE_KEY + PUBLIC_KEY)
-            val response = repository.getCharacters(timestamp = timestamp, md5 = hash)
-            val orderList = sort(response)
-            repository.setCharactersDataBase(orderList)
-            return orderList.map { it.toDomain() }
         }
     }
 }

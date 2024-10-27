@@ -43,6 +43,6 @@ val dataModule = module {
     single { get<DatabaseDriverFactory>().createDriver() }
 
     factoryOf(::APIService)
-    factory<Repository> { RepositoryProvider(get(), get()) }
+    factory<Repository> { RepositoryProvider(get(), get() , get()) }
     singleOf(::CharactersProvider)
 }

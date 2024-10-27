@@ -1,6 +1,7 @@
 package com.klyxdevs.kmptp2024.ui.mainScreen
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +47,9 @@ import coil3.compose.AsyncImage
 import com.klyxdevs.kmptp2024.ui.components.ExitConfirmation
 import com.klyxdevs.kmptp2024.ui.core.navigation.Routes
 import com.klyxdevs.kmptp2024.ui.mainScreen.viewmodel.MainScreenViewModel
+import kmptp2024.composeapp.generated.resources.Res
+import kmptp2024.composeapp.generated.resources.iv_nointernet
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
@@ -58,18 +63,15 @@ fun MainScreen(navController: NavController) {
         Box(
             Modifier.fillMaxSize().background(
                 Brush.verticalGradient(
-                    listOf(Color.LightGray, Color.Black),
-                    startY = 0f,
-                    endY = 600f
+                    listOf(Color.LightGray, Color.Black), startY = 0f, endY = 600f
                 )
             ), contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(color = Color.Red)
         }
     } else {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = { TopBar(navController) },
+        Scaffold(modifier = Modifier.fillMaxSize(),
+            topBar = { TopBar(navController, mainScreenViewModel) },
             content = { ContentView(mainScreenViewModel, navController) })
     }
 
@@ -77,7 +79,7 @@ fun MainScreen(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController) {
+fun TopBar(navController: NavController, mainScreenViewModel: MainScreenViewModel) {
     var showExitConfirmation by rememberSaveable { mutableStateOf(false) }
 
     ExitConfirmation(
@@ -92,28 +94,33 @@ fun TopBar(navController: NavController) {
         message = "Do you want back to Home ? "
     )
 
-    TopAppBar(
-        modifier = Modifier.height(48.dp),
-        title = {
-            Text(
-                text = "Hero List - Click for Detail",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                textAlign = TextAlign.Start,
-                color = Color.White,
-                fontStyle = FontStyle.Italic
+    TopAppBar(modifier = Modifier.height(48.dp), title = {
+        Text(
+            text = "Hero List - Click for Detail",
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            textAlign = TextAlign.Start,
+            color = Color.White,
+            fontStyle = FontStyle.Italic
+        )
+    }, colors = TopAppBarDefaults.topAppBarColors(Color.Black), navigationIcon = {
+        IconButton(onClick = { showExitConfirmation = true }) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = null,
+                tint = Color.White
             )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(Color.Black), navigationIcon = {
-            IconButton(onClick = { /* showExitConfirmation = true */ navController.navigate(Routes.TestScreen) }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null,
-                    tint = Color.White
-                )
-            }
         }
+    }, actions = {
+        IconButton(modifier = Modifier.padding(end = 30.dp), onClick = {
+            mainScreenViewModel.loadCharacters()
+        }) {
+            Icon(
+                imageVector = Icons.Filled.Refresh,
+                contentDescription = null,
+                tint = Color.White
+            )
+        }
+    }
 
     )
 }
@@ -121,69 +128,90 @@ fun TopBar(navController: NavController) {
 @Composable
 fun ContentView(mainScreenViewModel: MainScreenViewModel, navController: NavController) {
     val characters by mainScreenViewModel.characters.collectAsState()
-    Box(
-        Modifier.fillMaxSize().background(Color.Black).padding(top = 48.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(characters) { hero ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                            .height(350.dp)
-                            .clickable { navController.navigate(Routes.DetailScreenRoute(hero.id)) },
-                        shape = RoundedCornerShape(12),
-                        border = BorderStroke(4.dp, Color.White)
-                    ) {
-                        Box(contentAlignment = Alignment.CenterStart) {
-                            Box(
-                                modifier = Modifier.fillMaxSize()
-                                    .background(Color.Green.copy(alpha = 0.5f))
-                            )
+    if (characters.isNotEmpty()) {
 
-                            AsyncImage(
-                                model = hero.imageURL,
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
-                            )
+        Box(
+            Modifier.fillMaxSize().background(Color.Black).padding(top = 48.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    items(characters) { hero ->
+                        Card(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 4.dp).height(350.dp)
+                                .clickable { navController.navigate(Routes.DetailScreenRoute(hero.id)) },
+                            shape = RoundedCornerShape(12),
+                            border = BorderStroke(4.dp, Color.White)
+                        ) {
+                            Box(contentAlignment = Alignment.CenterStart) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize()
+                                        .background(Color.Green.copy(alpha = 0.5f))
+                                )
 
-                            Box(
-                                modifier = Modifier.fillMaxSize()
-                                    .background(
+                                AsyncImage(
+                                    model = hero.imageURL,
+                                    contentDescription = "",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize(),
+                                    error = painterResource(Res.drawable.iv_nointernet)
+                                )
+
+                                Box(
+                                    modifier = Modifier.fillMaxSize().background(
                                         Brush.horizontalGradient(
                                             0f to Color.Black.copy(alpha = 0.9f),
                                             0.4f to Color.White.copy(alpha = 0f)
                                         )
                                     )
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp)
-                                    .align(Alignment.BottomCenter)
-                                    .background(com.klyxdevs.kmptp2024.ui.core.Card)
-                            ) {
-                                Text(
-                                    text = hero.name,
-                                    fontSize = 23.sp,
-                                    modifier = Modifier.align(Alignment.Center),
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = Color.White,
-                                    maxLines = 1,
-                                    minLines = 1,
-                                    textAlign = TextAlign.Center,
-                                    overflow = TextOverflow.Ellipsis
                                 )
 
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().height(50.dp)
+                                        .align(Alignment.BottomCenter)
+                                        .background(com.klyxdevs.kmptp2024.ui.core.Card)
+                                ) {
+                                    Text(
+                                        text = hero.name,
+                                        fontSize = 23.sp,
+                                        modifier = Modifier.align(Alignment.Center),
+                                        fontWeight = FontWeight.ExtraBold,
+                                        color = Color.White,
+                                        maxLines = 1,
+                                        minLines = 1,
+                                        textAlign = TextAlign.Center,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
+        }
+    } else {
+        Box(contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(Color.White.copy(alpha = 0.5f))
+            )
+
+            Image(
+                painter = painterResource(Res.drawable.iv_nointernet),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.height(500.dp).fillMaxWidth()
+            )
+
+            Text(
+                "Please check you internet connection",
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 36.dp),
+                fontSize = 34.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
+
+        }
     }
 }

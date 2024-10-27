@@ -30,6 +30,9 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.klyxdevs.kmptp2024.ui.core.navigation.Routes
 import com.klyxdevs.kmptp2024.ui.detailScreen.viewmodel.DetailScreenViewmodel
+import kmptp2024.composeapp.generated.resources.Res
+import kmptp2024.composeapp.generated.resources.iv_nointernet
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
@@ -118,7 +121,8 @@ fun DetailScreen(navController: NavController, heroID: Long) {
                             AsyncImage(
                                 model = hero!!.imageURL,
                                 contentDescription = "",
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
+                                error = painterResource(Res.drawable.iv_nointernet)
                             )
 
                             Box(
@@ -160,14 +164,6 @@ fun DetailScreen(navController: NavController, heroID: Long) {
                     }
                 }
             }
-//                Text(
-//                    text = hero!!.name)
-//                TextField(value = hero!!.imageURL, onValueChange = {})
-//                AsyncImage(
-//                    model = hero!!.imageURL,
-//                    contentDescription = null,
-//                    error = painterResource(Res.drawable.compose_multiplatform)
-//                )
         }
 
     }
