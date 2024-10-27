@@ -2,6 +2,7 @@ package com.klyxdevs.kmptp2024.ui.homeScreen.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import com.klyxdevs.kmptp2024.DatabaseDriverFactory
 import com.klyxdevs.kmptp2024.Greeting
 import com.klyxdevs.kmptp2024.SuperHeroDB
@@ -41,13 +42,13 @@ class HomeScreenViewModel(
 
     private fun chargeDB() {
         viewModelScope.launch(Dispatchers.IO) { // Ejecuta en un hilo de fondo
-            val db = databaseDriverFactory.createDriver()
-            val db2 = SuperHeroDB(db)
-            val query = db2.superHeroDBQueries
+            val db = SuperHeroDB(databaseDriverFactory.createDriver())
+            val query = db.superHeroDBQueries
 
             query.transaction { // Inicia una transacción
                 for (i in 0..9) {
                     query.insert(id = i.toLong(), name = "Cris")
+                    Logger.i { "Inyeccion -> ${query.insert(id = i.toLong(), name = "Cris")}" }
                 }
             }
         }

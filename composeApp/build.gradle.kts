@@ -67,6 +67,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.negotiation)
             implementation(libs.kotlin.serialization)
+            implementation(libs.ktor.client.logging)
             //ViewModel
             implementation(libs.viewmodel.compose)
             //Coil
@@ -77,6 +78,8 @@ kotlin {
             //SQLDelight
             implementation(libs.sqldelight.coroutines)
             implementation(libs.sqldelight.jvm)
+            //Logs
+            implementation(libs.logs.kermit)
 
 
         }
