@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -42,6 +43,8 @@ kotlin {
             implementation(libs.koin.android)
             //ktor
             implementation(libs.ktor.client.okhttp)
+            //SQLDelight
+            implementation(libs.android.driver)
 
         }
         commonMain.dependencies {
@@ -71,6 +74,10 @@ kotlin {
             implementation(libs.coil.network.ktor)
             //Crypto
             implementation(libs.krypto)
+            //SQLDelight
+            implementation(libs.sqldelight.coroutines)
+            implementation(libs.sqldelight.jvm)
+
 
         }
         desktopMain.dependencies {
@@ -78,10 +85,14 @@ kotlin {
             implementation(libs.kotlinx.coroutines.swing)
             //ktor
             implementation(libs.ktor.client.okhttp)
+            //SQLDelight
+            implementation(libs.sqldelight.jvm)
         }
         iosMain.dependencies {
             //ktor
             implementation(libs.ktor.client.darwin)
+            //SQLDelight
+            implementation(libs.native.driver)
         }
 
     }
@@ -126,6 +137,14 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.klyxdevs.kmptp2024"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+sqldelight {
+    databases {
+        create("SuperHeroDB") {
+            packageName.set("com.klyxdevs.kmptp2024")
         }
     }
 }

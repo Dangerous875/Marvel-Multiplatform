@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class DetailScreenViewmodel(private val getCharacterByIDUseCase: GetCharacterByIDUseCase) :
+class DetailScreenViewmodel(
+    private val getCharacterByIDUseCase: GetCharacterByIDUseCase,
+) :
     ViewModel() {
 
     private val _characterSelected = MutableStateFlow<CharacterDomain?>(null)

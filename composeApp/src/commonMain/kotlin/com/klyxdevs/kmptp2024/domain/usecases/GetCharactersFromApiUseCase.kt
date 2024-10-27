@@ -1,5 +1,7 @@
 package com.klyxdevs.kmptp2024.domain.usecases
 
+import app.cash.sqldelight.db.SqlDriver
+import com.klyxdevs.kmptp2024.SuperHeroDB
 import com.klyxdevs.kmptp2024.data.core.PRIVATE_KEY
 import com.klyxdevs.kmptp2024.data.core.PUBLIC_KEY
 import com.klyxdevs.kmptp2024.data.local.Character
@@ -9,14 +11,16 @@ import com.klyxdevs.kmptp2024.domain.repository.Repository
 import com.soywiz.krypto.MD5
 import io.ktor.util.date.getTimeMillis
 import io.ktor.utils.io.core.toByteArray
+import org.koin.mp.KoinPlatform.getKoin
 
 class GetCharactersFromApiUseCase(private val repository: Repository) {
 
     suspend operator fun invoke(): List<CharacterDomain> {
         val heroList = repository.getCharactersDataBase()
-        if (heroList.isNotEmpty()){
+        if (heroList.isNotEmpty()) {
             return heroList.map { it.toDomain() }
-        }else{
+        } else {
+
             val timestamp = getTimeMillis()
             val hash = md5(timestamp.toString() + PRIVATE_KEY + PUBLIC_KEY)
             val response = repository.getCharacters(timestamp = timestamp, md5 = hash)
@@ -43,14 +47,14 @@ private fun sort(characters: List<Character>): List<Character> {
  * - Los que NO tienen descripción se ordenan descendentemente por su id.
  */
 private class CharacterComparator : Comparator<Character> {
-    override fun compare(c1: Character, c2: Character): Int {
-        if (c1.description.isEmpty() && c2.description.isEmpty()) {
-            return c2.id.compareTo(c1.id)
+    override fun compare(a: Character, b: Character): Int {
+        if (a.description.isEmpty() && b.description.isEmpty()) {
+            return b.id.compareTo(a.id)
         }
-        if (c1.description.isNotEmpty() && c2.description.isNotEmpty()) {
-            return c1.id.compareTo(c2.id)
+        if (a.description.isNotEmpty() && b.description.isNotEmpty()) {
+            return a.id.compareTo(b.id)
         }
-        if (c1.description.isNotEmpty() && c2.description.isEmpty()) {
+        if (a.description.isNotEmpty() && b.description.isEmpty()) {
             return -1
         }
         return 1
