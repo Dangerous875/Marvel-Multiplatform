@@ -2,7 +2,7 @@ This is a Kotlin Multiplatform project targeting Android, iOS, Desktop.
 
 #  Kotlin Multiplatform Marvel
 > [!NOTE]
-> Description of Kotlin Multiplatform Marvel (Kotlin multiplatform, navigation 2.8.0 with Kotlin Serialization, Koin, Ktor, ViewModels, Coil, SQLDelight and Crypto).
+> Description of Kotlin Multiplatform Marvel (Kotlin multiplatform, Jetpack compose, MVVM, Clean arquitecture, navigation 2.8.0 with Kotlin Serialization, Koin, Ktor, ViewModels, Coil, SQLDelight and Crypto).
 This application works on Android, iOS and Desktop
 # Home 
 
